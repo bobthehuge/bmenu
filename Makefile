@@ -10,31 +10,31 @@ BUILD = build
 SRC = src/*.c
 OBJ = $(BUILD)/$(SRC:.c=.o)
 DEP = $(BUILD)/$(SRC:.c=.d)
-EXE = $(BUILD)/a.out
+EXE = $(BUILD)/bmenu
 
 all: rel
 
 rel: setup
-	$(CC) -o $(EXE) $(SRC) $(CRELFLAGS)
+	@$(CC) -o $(EXE) $(SRC) $(CRELFLAGS)
 
 dev: setup
-	$(CC) -o $(EXE) $(SRC) $(CDEVFLAGS)
+	@$(CC) -o $(EXE) $(SRC) $(CDEVFLAGS)
 
 run:
 	./$(EXE)
 
 setup:
-	mkdir -p $(BUILD)
+	@mkdir -p $(BUILD)
 
 # -include ${DEP}
 
 .PHONY: all rel dev run setup clean reset
 
 clean:
-	$(RM) $(OBJ)
-	$(RM) $(DEP)
+	@$(RM) $(OBJ)
+	@$(RM) $(DEP)
 
 reset:
-	$(RM) -rf $(BUILD)
+	@$(RM) -rf $(BUILD)
 
 # END
