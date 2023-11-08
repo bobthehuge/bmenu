@@ -1,5 +1,7 @@
 #include <err.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "debug.h"
 
@@ -7,19 +9,42 @@
 #define BUFSIZE 128
 #endif
 
+enum FID
+{
+    NEW,
+    CHG,
+    CLS
+};
+
 void get_input(char* buf)
 {
-    if (scanf("%s", buf) == EOF)
+    if (scanf("%[^\n]%*c", buf) == EOF)
     {
-        errx(1, "%s", __func__);
+        ERR(1, "I/O Error");
     }
 }
 
 int main(void)
 {
-    char buffer[BUFSIZE];
+    char __buffer[BUFSIZE];
+    char* buffer = __buffer;
 
     get_input(buffer);
 
+    char* cbuf = malloc(strlen(buffer));
+    strcat(cbuf, buffer);
+
+    /* LOGX("'%s'", strtok(NULL, " ")); */
+    /* LOGX("'%s'", strtok(NULL, " ")); */
+    /* LOGX("'%s'", strtok(NULL, " ")); */
+
+    cbuf = strtok(cbuf, " ");
+    for (size_t i = 0; cbuf != NULL; ++i)
+    {
+        LOGX("'%s'", cbuf);
+        cbuf = strtok(NULL, " ");
+    }
+
+    free(cbuf);
     return 0;
 }
