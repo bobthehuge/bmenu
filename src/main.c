@@ -24,6 +24,25 @@ void get_input(char* buf)
     }
 }
 
+void get_tokens(char* buf)
+{
+    char** tokens = malloc(sizeof(char*));
+    size_t token_count = 1;
+
+    char* tok = strtok(buf, " ");
+    tokens[token_count-1] = tok;
+
+    while (tok != NULL)
+    {
+        tok = strtok(NULL, " ");
+        token_count++;
+        tokens = realloc(tokens, token_count);
+        tokens[token_count-1] = tok;
+    }
+
+    printf("dummy\n");
+}
+
 int main(void)
 {
     char __buffer[BUFSIZE];
@@ -34,16 +53,7 @@ int main(void)
     char* cbuf = malloc(strlen(buffer));
     strcat(cbuf, buffer);
 
-    /* LOGX("'%s'", strtok(NULL, " ")); */
-    /* LOGX("'%s'", strtok(NULL, " ")); */
-    /* LOGX("'%s'", strtok(NULL, " ")); */
-
-    cbuf = strtok(cbuf, " ");
-    for (size_t i = 0; cbuf != NULL; ++i)
-    {
-        LOGX("'%s'", cbuf);
-        cbuf = strtok(NULL, " ");
-    }
+    get_tokens(cbuf);
 
     free(cbuf);
     return 0;
