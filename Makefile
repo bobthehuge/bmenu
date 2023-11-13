@@ -1,6 +1,6 @@
 CC = gcc
 CPPFLAGS = -MMD
-CDEVFLAGS = -Wall -Wextra -Wshadow -pedantic-errors -g -std=gnu99
+CDEVFLAGS = -Wall -Wextra -Wshadow -pedantic-errors -g -std=c99
 CRELFLAGS = -pedantic -std=c99 -O3 -DNDEBUG
 LDFLAGS = 
 LDLIBS = 
@@ -25,6 +25,9 @@ run:
 
 setup:
 	@mkdir -p $(BUILD)
+
+memcheck:
+	valgrind $(EXE)
 
 # -include ${DEP}
 

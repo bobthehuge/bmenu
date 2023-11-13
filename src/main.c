@@ -4,57 +4,80 @@
 #include <string.h>
 
 #include "debug.h"
+#include "trees.h"
 
 #ifndef BUFSIZE
 #define BUFSIZE 128
 #endif
 
-enum FID
-{
-    NEW,
-    CHG,
-    CLS
-};
+#define PROMPT_TXT "bmenu> "
 
-void get_input(char* buf)
+void get_input(char* prompt, char* buf)
 {
+    printf("%s", prompt);
+
     if (scanf("%[^\n]%*c", buf) == EOF)
     {
         ERR(1, "I/O Error");
     }
 }
 
-void get_tokens(char* buf)
+char* substr(char* src, size_t len)
 {
-    char** tokens = malloc(sizeof(char*));
-    size_t token_count = 1;
+    char* dst = malloc(len+1);
+    memcpy(dst, src, len);
+    dst[len] = '\0';
+    return dst;
+}
 
-    char* tok = strtok(buf, " ");
-    tokens[token_count-1] = tok;
+struct Tree* strsplit(char* input)
+{
+    // init the root whose kids waiting for shift/reduce
+    // root->value should always be NULL
+    struct Tree* root = init_tree(NULL);
 
-    while (tok != NULL)
+    size_t bow = 0; //Beginning Of Word
+    size_t i = 0;
+
+    while (input[i] != '\0')
     {
-        tok = strtok(NULL, " ");
-        token_count++;
-        tokens = realloc(tokens, token_count);
-        tokens[token_count-1] = tok;
+        while (input[i] != '\0' && input[i] == ' ')
+        {
+            i++;
+        }
+
+        bow = i;
+
+        while (input[i] != '\0' && input[i] != ' ')
+        {
+            i++;
+        }
+
+        if (input[i] == '\0')
+            break;
+
+        char* val = substr(input+bow, i-bow);
+        struct Tree* elt = init_tree(val);
+        tree_shift(root, elt);
     }
 
-    printf("dummy\n");
+    return root;
 }
 
 int main(void)
 {
     char __buffer[BUFSIZE];
     char* buffer = __buffer;
+    get_input(PROMPT_TXT, buffer);
 
-    get_input(buffer);
+    struct Tree* root = strsplit(buffer);
+    /* struct Tree* root = strsplit("-n lie  -go"); */
 
-    char* cbuf = malloc(strlen(buffer));
-    strcat(cbuf, buffer);
+    for (size_t i = 0; i < root->kcount; ++i)
+    {
+        LOGX("%s", root->kids[i]->value);
+    }
 
-    get_tokens(cbuf);
-
-    free(cbuf);
+    free_tree(root);
     return 0;
 }
